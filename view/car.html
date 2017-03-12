@@ -82,6 +82,17 @@
 				});
 		}
 	});
+
+
+	$("#takeDatabuttonAutoFixTime").click(function(){
+		$.ajax({
+			url:"/autoParam",
+			success:function(data){
+				alert("开始执行了。。");
+			}
+		});
+	})
+
 </script>
 
 <script>
