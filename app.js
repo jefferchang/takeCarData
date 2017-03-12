@@ -27,7 +27,7 @@ app.get('/param', function (req, r) {
     var  brand_text =  req.query.brand_text;
     var  brand_value =  req.query.brand_value;
     var  ser_text =  req.query.ser_text;
-    var targetUrl ="http://newcar.xcar.com.cn/"+ser_value+"/config.htm";
+    var targetUrl ="http://***/"+ser_value+"/config.htm";
     takedata.push[targetUrl];
     var buffer = xlsx.build([
         {
