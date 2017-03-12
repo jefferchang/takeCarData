@@ -1,0 +1,27 @@
+{
+  "name": "node",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "express": "^4.15.2",
+    "fs": "0.0.1-security",
+    "koa": "^2.1.0",
+    "superagent": "^3.5.0"
+  },
+  "devDependencies": {
+    "buffer": "^5.0.5",
+    "bufferhelper": "^0.2.1",
+    "cheerio": "^0.22.0",
+    "eventproxy": "^0.3.5",
+    "iconv-lite": "^0.4.15",
+    "node-xlsx": "^0.7.4",
+    "path": "^0.12.7",
+    "superagent-charset": "^1.1.1"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
