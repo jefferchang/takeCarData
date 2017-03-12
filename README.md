@@ -1,1 +1,4 @@
-# takeCarData
+# npm install  
+
+
+# node app.js 
