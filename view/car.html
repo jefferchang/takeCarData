@@ -1,0 +1,177 @@
+<html>
+<head>
+	<meta charset="gb2312">
+	<script src="./jquery.min.js"></script>
+</head>
+<script src="http://html.xcar.com.cn/newcar/pub_js/car_arr_newcar_2009_ps.js" charset="gb2312" type="text/javascript" ></script>
+<script src="http://newcar.xcar.com.cn/pub_js/car_search_2009_ps.js"  charset="gb2312" type="text/javascript" ></script>
+
+
+
+<body>
+<table >
+	<tr><td>品牌:</td><td><select id="fctbox" onchange="brandChange()"></select></td></tr>
+	<tr><td>车系:</td><td><select id="brbox" onchange="seriChange(this.value)"  ></select></td></tr>
+	<tr><td>车型:</td><td><div id="mid__"></div></td></tr>
+	<tr><td>参数大类:</td><td><select   id="Ddlei1" onChange='getDdlei2(this.value)'>
+		<option value="" selected>-请选择参数大类-</option>
+	</select></td></tr>
+	<tr><td>参数小类:</td><td><select   id="Ddlei2" onChange='getthisvalue(this.value)'> </select></td></tr>
+	<tr><td>值:</td><td><div id="show_type"></div></td></tr>
+	<tr><td> <input id="takeDatabutton" value = "takeDatabutton" type="button"/></td></tr>
+</table>
+
+<div id="allhtml"></div>
+</body>
+
+
+
+<script>
+	//初始化品牌
+	init_pbrand(null);
+
+	//品牌改变 取得车系
+	function brandChange(){
+		search_pserid(null);
+	}
+
+</script>
+
+<script>
+	//记取网页内容
+	var htmlp="";
+	//车系 改变 取config.htm页面
+	function seriChange(a){
+		$.ajax({
+			url:"/param",
+			data:{ser:a},
+			success:function(data){
+				htmlp =data;
+				var htmlspec = $(data).find("#mid")[0];
+				$("#mid__").html(htmlspec);
+				if(htmlspec.options.length>0){
+					getmid(htmlspec.options[0].value)
+				}
+
+			},
+			error:function(data){
+				debugger;
+
+			}
+
+		});
+	}
+
+	//初始化参数大类
+	function getmid(mid)
+	{
+
+		var Ddlei1_str = '<option value="">-请选择参数大类-</option>';
+
+		$(htmlp).find(".show_detaile2").each(function(){
+			if($(this).next().find("[mid=" + mid + "]").length > 0){
+				Ddlei1_str += "<option value='" + $(this).attr("configid") + "'>" + $(this).find("b").eq(1).html() + "</option>";
+			}
+		});
+		$("#Ddlei1").html(Ddlei1_str);
+
+	}
+	// 读取小类。
+	function getDdlei2(baseid){
+		if(baseid){
+			var Ddlei1_val = $(htmlp).find("select[name=mid]").val();
+			$(htmlp).find("#Ddlei2").empty();
+			var option = "<option value='' selected>-请选择参数小类-</option>";
+
+			$(htmlp).find("#base_"+baseid+" tr").each(function(i){
+				if($(this).find("td[mid=" + Ddlei1_val + "]").length > 0){
+					var v = $(this).find('td').eq(0).attr("id").replace('1_','');
+					var n = $(this).find('td').eq(0).html().replace('：','');
+					option += "<option value='"+v+"'>"+n+"</option>";
+				}
+			});
+			$(option).appendTo($("#Ddlei2"));
+
+		}
+	}
+
+	//开始取值 。
+	function getthisvalue(Ddlei2){
+		if(Ddlei2){
+			var m = $(htmlp).find("#mid").val();
+			var v = $(htmlp).find("#"+Ddlei2+"_"+m).html();
+			if(v){
+				$("#show_type").html(v);
+				return v;
+			}
+			return null;
+		}
+	}
+
+
+
+	function getPser(pserid){ //生成车系
+		var brboxobj=document.getElementById('brbox');
+		if(ps_arr[pserid]!='') {
+			var dd = ps_arr[pserid].split(',');
+			brboxobj.innerText = '';
+			brboxobj.options.length = 0;
+			brboxobj.options[0] = new Option('--------选择车系--------', 0);
+			var c = 1;
+			for (loop = 0; loop < dd.length; loop += 2) {
+				brboxobj.options[c] = new Option(dd[loop + 1], dd[loop]);
+				c++;
+			}
+		}
+	}
+</script>
+
+<script>
+	//点击开始抓取数据
+$("#takeDatabutton").click(function () {
+	var allhtml = "";
+	$("#fctbox option").each(function () {
+		setTimeout(aaa(allhtml,$(this)),1000)
+	});
+});
+
+	function aaa(allhtml,a){
+		var brand_text = a.text();
+		var brand_value = a.val();
+		if($.trim(brand_value)!="" && $.trim(brand_value)!='0'){
+			getPser(brand_value);//与车系绑定值
+			$("#brbox option").each(function(){
+				setTimeout(bbb(allhtml,$(this),brand_text,brand_value),3000)
+			});
+		}
+	}
+
+	function bbb(allhtml,b,brand_text,brand_value){
+		var ser_text = b.text();
+		var ser_value = b.val();
+		if($.trim(ser_value)!="" && $.trim(ser_value)!='0'){
+			$.ajax({
+				url:"/param",
+				data:{
+					ser_value:ser_value,
+					brand_text:brand_text,
+					brand_value:brand_value,
+					ser_text:ser_text
+				},
+				success:function(data){
+					console.log(data);
+				},
+				error:function(data){
+					console("车系出错！");
+				}
+			});
+		}
+	}
+
+</script>
+
+
+
+
+
+</html>
