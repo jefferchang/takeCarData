@@ -3,21 +3,19 @@
 	<meta charset="gb2312">
 	<script src="./jquery.min.js"></script>
 </head>
-<script src="http://html.xcar.com.cn/newcar/pub_js/car_arr_newcar_2009_ps.js" charset="gb2312" type="text/javascript" ></script>
-<script src="http://newcar.xcar.com.cn/pub_js/car_search_2009_ps.js"  charset="gb2312" type="text/javascript" ></script>
 
 
 
 <body>
 <table >
-	<tr><td>å“ç‰Œ:</td><td><select id="fctbox" onchange="brandChange()"></select></td></tr>
-	<tr><td>è½¦ç³»:</td><td><select id="brbox" onchange="seriChange(this.value)"  ></select></td></tr>
-	<tr><td>è½¦å‹:</td><td><div id="mid__"></div></td></tr>
-	<tr><td>å‚æ•°å¤§ç±»:</td><td><select   id="Ddlei1" onChange='getDdlei2(this.value)'>
-		<option value="" selected>-è¯·é€‰æ‹©å‚æ•°å¤§ç±»-</option>
+	<tr><td>Æ·ÅÆ:</td><td><select id="fctbox" onchange="brandChange()"></select></td></tr>
+	<tr><td>³µÏµ:</td><td><select id="brbox" onchange="seriChange(this.value)"  ></select></td></tr>
+	<tr><td>³µĞÍ:</td><td><div id="mid__"></div></td></tr>
+	<tr><td>²ÎÊı´óÀà:</td><td><select   id="Ddlei1" onChange='getDdlei2(this.value)'>
+		<option value="" selected>-ÇëÑ¡Ôñ²ÎÊı´óÀà-</option>
 	</select></td></tr>
-	<tr><td>å‚æ•°å°ç±»:</td><td><select   id="Ddlei2" onChange='getthisvalue(this.value)'> </select></td></tr>
-	<tr><td>å€¼:</td><td><div id="show_type"></div></td></tr>
+	<tr><td>²ÎÊıĞ¡Àà:</td><td><select   id="Ddlei2" onChange='getthisvalue(this.value)'> </select></td></tr>
+	<tr><td>Öµ:</td><td><div id="show_type"></div></td></tr>
 	<tr><td> <input id="takeDatabutton" value = "takeDatabutton" type="button"/></td></tr>
 </table>
 
@@ -27,10 +25,10 @@
 
 
 <script>
-	//åˆå§‹åŒ–å“ç‰Œ
+	//³õÊ¼»¯Æ·ÅÆ
 	init_pbrand(null);
 
-	//å“ç‰Œæ”¹å˜ å–å¾—è½¦ç³»
+	//Æ·ÅÆ¸Ä±ä È¡µÃ³µÏµ
 	function brandChange(){
 		search_pserid(null);
 	}
@@ -38,9 +36,9 @@
 </script>
 
 <script>
-	//è®°å–ç½‘é¡µå†…å®¹
+	//¼ÇÈ¡ÍøÒ³ÄÚÈİ
 	var htmlp="";
-	//è½¦ç³» æ”¹å˜ å–config.htmé¡µé¢
+	//³µÏµ ¸Ä±ä È¡config.htmÒ³Ãæ
 	function seriChange(a){
 		$.ajax({
 			url:"/param",
@@ -62,11 +60,11 @@
 		});
 	}
 
-	//åˆå§‹åŒ–å‚æ•°å¤§ç±»
+	//³õÊ¼»¯²ÎÊı´óÀà
 	function getmid(mid)
 	{
 
-		var Ddlei1_str = '<option value="">-è¯·é€‰æ‹©å‚æ•°å¤§ç±»-</option>';
+		var Ddlei1_str = '<option value="">-ÇëÑ¡Ôñ²ÎÊı´óÀà-</option>';
 
 		$(htmlp).find(".show_detaile2").each(function(){
 			if($(this).next().find("[mid=" + mid + "]").length > 0){
@@ -76,17 +74,17 @@
 		$("#Ddlei1").html(Ddlei1_str);
 
 	}
-	// è¯»å–å°ç±»ã€‚
+	// ¶ÁÈ¡Ğ¡Àà¡£
 	function getDdlei2(baseid){
 		if(baseid){
 			var Ddlei1_val = $(htmlp).find("select[name=mid]").val();
 			$(htmlp).find("#Ddlei2").empty();
-			var option = "<option value='' selected>-è¯·é€‰æ‹©å‚æ•°å°ç±»-</option>";
+			var option = "<option value='' selected>-ÇëÑ¡Ôñ²ÎÊıĞ¡Àà-</option>";
 
 			$(htmlp).find("#base_"+baseid+" tr").each(function(i){
 				if($(this).find("td[mid=" + Ddlei1_val + "]").length > 0){
 					var v = $(this).find('td').eq(0).attr("id").replace('1_','');
-					var n = $(this).find('td').eq(0).html().replace('ï¼š','');
+					var n = $(this).find('td').eq(0).html().replace('£º','');
 					option += "<option value='"+v+"'>"+n+"</option>";
 				}
 			});
@@ -95,7 +93,7 @@
 		}
 	}
 
-	//å¼€å§‹å–å€¼ ã€‚
+	//¿ªÊ¼È¡Öµ ¡£
 	function getthisvalue(Ddlei2){
 		if(Ddlei2){
 			var m = $(htmlp).find("#mid").val();
@@ -110,13 +108,13 @@
 
 
 
-	function getPser(pserid){ //ç”Ÿæˆè½¦ç³»
+	function getPser(pserid){ //Éú³É³µÏµ
 		var brboxobj=document.getElementById('brbox');
 		if(ps_arr[pserid]!='') {
 			var dd = ps_arr[pserid].split(',');
 			brboxobj.innerText = '';
 			brboxobj.options.length = 0;
-			brboxobj.options[0] = new Option('--------é€‰æ‹©è½¦ç³»--------', 0);
+			brboxobj.options[0] = new Option('--------Ñ¡Ôñ³µÏµ--------', 0);
 			var c = 1;
 			for (loop = 0; loop < dd.length; loop += 2) {
 				brboxobj.options[c] = new Option(dd[loop + 1], dd[loop]);
@@ -127,7 +125,7 @@
 </script>
 
 <script>
-	//ç‚¹å‡»å¼€å§‹æŠ“å–æ•°æ®
+	//µã»÷¿ªÊ¼×¥È¡Êı¾İ
 $("#takeDatabutton").click(function () {
 	var allhtml = "";
 	$("#fctbox option").each(function () {
@@ -139,7 +137,7 @@ $("#takeDatabutton").click(function () {
 		var brand_text = a.text();
 		var brand_value = a.val();
 		if($.trim(brand_value)!="" && $.trim(brand_value)!='0'){
-			getPser(brand_value);//ä¸è½¦ç³»ç»‘å®šå€¼
+			getPser(brand_value);//Óë³µÏµ°ó¶¨Öµ
 			$("#brbox option").each(function(){
 				setTimeout(bbb(allhtml,$(this),brand_text,brand_value),3000)
 			});
@@ -162,7 +160,7 @@ $("#takeDatabutton").click(function () {
 					console.log(data);
 				},
 				error:function(data){
-					console("è½¦ç³»å‡ºé”™ï¼");
+					console("³µÏµ³ö´í£¡");
 				}
 			});
 		}
