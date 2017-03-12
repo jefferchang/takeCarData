@@ -150,26 +150,7 @@ app.get('/autoParam', function (req, r) {
             var sername = obj.sername;
             var servalue = obj.servalue;
             var i = 0;
-            var tagurl="";
-            var tagetI=0;
-            brandname.forEach(function(n){
-                tagurl = url.replace("${url}",servalue[i]);
-                superagent.get(tagurl).charset('gb2312').end(function (err, res) {
-                        if (res) {
-                            var text = res.text;
-                            var $ = cheerio.load(text, {decodeEntities: false});
-                            var jq = $(text);
-                            var htmlall = chtml($,jq,brandname[i],brandvalue[i],sername[i],servalue[i]);
-                            ///
-                            createExcel(htmlall,brandname[i],sername[i]);
-                        }
-                    tagetI++;
-                        if(tagetI == brandname.length ){
-                            console.log("执行完成功!");
-                        }
-                    });
-                i++;
-            });
+            bsloop(brandname,brandvalue,sername,servalue,url,i);
         });
     });
     r.send("正在导入....");
@@ -283,11 +264,43 @@ var createExcel = function (htmlall,brand_text,ser_text) {
                 data: cars
             }
         ]);
-        fs.writeFileSync(path.join("cardata/",  brand_text + "_" + ser_text + '.xlsx'), buffer, {'flag': 'w'});
+        console.log(brand_text+""+ser_text);
+        fs.writeFileSync(path.join("cardata/", brand_text + "_" + ser_text + '.xlsx'), buffer, {'flag': 'w'});
         console.log("生成Excel成功");
     }
 }
 
+var bsloop = function(brandname,brandvalue,sername,servalue,url,i){
+        var brand_text= brandname[i];
+        var brand_value = brandvalue[i];
+        var ser_name =sername[i];
+        var ser_value = servalue[i];
+        var tagurl = url.replace("${url}",ser_value);
+        superagent.get(tagurl).charset('gb2312').end(function (err, res) {
+            if (res) {
+                console.log(1+" "+new Date());
+                var text = res.text;
+                var $ = cheerio.load(text, {decodeEntities: false});
+                console.log(2+" "+new Date());
+                var jq = $(text);
+                console.log(3+" "+new Date());
+                var htmlall = chtml($,jq,brand_text,brand_value,ser_name,ser_value);
+                console.log(4+" "+new Date());
+                ///
+                createExcel(htmlall,brand_text,ser_name);
+                console.log(5+" "+new Date());
+            }
+            i++;
+            if(brandname.length > i ){
+                bsloop(brandname,brandvalue,sername,servalue,url,i)
+            }else{
+                console.log("执行完成功!");
+            }
+            console.log("执行行数:"+i);
+        });
+
+
+}
 app.use(express.static(path.join(__dirname, 'view')));
 app.listen(3000);
 console.log("启动完成");
