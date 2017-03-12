@@ -171,7 +171,7 @@
 $("#takeDatabuttonAuto").click(function () {
 	var allhtml = "";
 	$("#fctbox option").each(function () {
-		setTimeout(aaa(allhtml,$(this)),1000)
+		setTimeout(aaa(allhtml,$(this)),5000)
 	});
 });
 
@@ -182,7 +182,7 @@ $("#takeDatabuttonAuto").click(function () {
 		if($.trim(brand_value)!="" && $.trim(brand_value)!='0'){
 			getPser(brand_value);//与车系绑定值
 			$("#brbox option").each(function(){
-				setTimeout(bbb(allhtml,$(this),brand_text,brand_value),3000)
+				setTimeout(bbb(allhtml,$(this),brand_text,brand_value),5000);
 			});
 		}
 	}
