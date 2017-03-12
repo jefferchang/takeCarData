@@ -264,9 +264,9 @@ var createExcel = function (htmlall,brand_text,ser_text) {
                 data: cars
             }
         ]);
-        console.log(brand_text+""+ser_text);
+        console.log("准备生成.."+new Date());
         fs.writeFileSync(path.join("cardata/", brand_text + "_" + ser_text + '.xlsx'), buffer, {'flag': 'w'});
-        console.log("生成Excel成功");
+        console.log("生成Excel成功"+new Date());
     }
 }
 
@@ -278,17 +278,12 @@ var bsloop = function(brandname,brandvalue,sername,servalue,url,i){
         var tagurl = url.replace("${url}",ser_value);
         superagent.get(tagurl).charset('gb2312').end(function (err, res) {
             if (res) {
-                console.log(1+" "+new Date());
                 var text = res.text;
                 var $ = cheerio.load(text, {decodeEntities: false});
-                console.log(2+" "+new Date());
                 var jq = $(text);
-                console.log(3+" "+new Date());
                 var htmlall = chtml($,jq,brand_text,brand_value,ser_name,ser_value);
-                console.log(4+" "+new Date());
                 ///
                 createExcel(htmlall,brand_text,ser_name);
-                console.log(5+" "+new Date());
             }
             i++;
             if(brandname.length > i ){
