@@ -20,6 +20,7 @@ app.all('*', function(req, res, next) {
     next();
 });
 
+var takedata  = [];
 
 app.get('/param', function (req, r) {
     var  ser_value =  req.query.ser_value;
@@ -27,7 +28,14 @@ app.get('/param', function (req, r) {
     var  brand_value =  req.query.brand_value;
     var  ser_text =  req.query.ser_text;
     var targetUrl ="http://newcar.xcar.com.cn/"+ser_value+"/config.htm";
-    console.log(targetUrl);
+    takedata.push[targetUrl];
+    var buffer = xlsx.build([
+        {
+            name:'车url',
+            data:takedata
+        }
+    ]);
+    fs.writeFileSync('url.xlsx',buffer,{'flag':'w'});
     superagent.get(targetUrl)
         .charset('gb2312')
         .end(function (err, res) {
