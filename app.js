@@ -20,14 +20,32 @@ app.all('*', function(req, res, next) {
     next();
 });
 
+
+
+
+
+app.get('/paramSelect', function (req, r) {
+    var  ser_value =  req.query.ser_value;
+    var targetUrl ="http://newcar.xcar.com.cn/"+ser_value+"/config.htm";
+    superagent.get(targetUrl)
+        .charset('gb2312')
+        .end(function (err, res) {
+            if(res){
+                r.send(res.text);
+            }
+        });
+});
+
 var takedata  = [];
+
+
 
 app.get('/param', function (req, r) {
     var  ser_value =  req.query.ser_value;
     var  brand_text =  req.query.brand_text;
     var  brand_value =  req.query.brand_value;
     var  ser_text =  req.query.ser_text;
-    var targetUrl ="http://***/"+ser_value+"/config.htm";
+    var targetUrl ="http://newcar.xcar.com.cn/"+ser_value+"/config.htm";
     takedata.push[targetUrl];
     var buffer = xlsx.build([
         {
@@ -108,9 +126,11 @@ app.get('/param', function (req, r) {
                             data:cars
                         }
                     ]);
-                    fs.writeFileSync("cardata/"+brand_text+"_"+ser_text+'.xlsx',buffer,{'flag':'w'});
+                    var bt = brand_text.replace(" ","-");
+                    var st = ser_text.replace(" ","-");
+                    fs.writeFileSync("cardata/"+bt+"_"+st+'.xlsx',buffer,{'flag':'w'});
                 }
-                r.send(text);
+                r.send(res.text);
             }
         });
 });

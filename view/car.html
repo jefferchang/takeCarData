@@ -4,20 +4,37 @@
 	<script src="./jquery.min.js"></script>
 </head>
 
+<script src="http://html.xcar.com.cn/newcar/pub_js/car_arr_newcar_2009_ps.js" charset="gb2312" type="text/javascript" ></script>
+<script src="http://newcar.xcar.com.cn/pub_js/car_search_2009_ps.js"  charset="gb2312" type="text/javascript" ></script>
+
 
 
 <body>
-<table >
-	<tr><td>品牌:</td><td><select id="fctbox" onchange="brandChange()"></select></td></tr>
-	<tr><td>车系:</td><td><select id="brbox" onchange="seriChange(this.value)"  ></select></td></tr>
-	<tr><td>车型:</td><td><div id="mid__"></div></td></tr>
-	<tr><td>参数大类:</td><td><select   id="Ddlei1" onChange='getDdlei2(this.value)'>
-		<option value="" selected>-请选择参数大类-</option>
-	</select></td></tr>
-	<tr><td>参数小类:</td><td><select   id="Ddlei2" onChange='getthisvalue(this.value)'> </select></td></tr>
-	<tr><td>值:</td><td><div id="show_type"></div></td></tr>
-	<tr><td> <input id="takeDatabutton" value = "takeDatabutton" type="button"/></td></tr>
+<fieldset>
+	<legend>手动(按车系)</legend>
+	<table>
+		<tr><td>品牌:</td><td><select id="fctbox" onchange="brandChange()"></select></td></tr>
+		<tr><td>车系:</td><td><select id="brbox" onchange="seriChange(this.value)"  ></select></td></tr>
+		<tr><td>车型:</td><td><div id="mid__"></div></td></tr>
+		<tr><td>参数大类:</td><td><select   id="Ddlei1" onChange='getDdlei2(this.value)'>
+			<option value="" selected>-请选择参数大类-</option>
+		</select></td></tr>
+		<tr><td>参数小类:</td><td><select   id="Ddlei2" onChange='getthisvalue(this.value)'> </select></td></tr>
+		<tr><td>值:</td><td><div id="show_type"></div></td></tr>
+		<tr><td><input id="takeDatabuttonHand" value = "TakeDatabuttonHand" type="button"/></td></tr>
+		<tr><td><div id="takeDatabuttonHandCon" ></div></td></tr>
+	</table>
+</fieldset>
+
+<fieldset>
+	<legend>自动(所有品牌-车系)</legend>
+<table>
+	<tr><td> <input id="takeDatabuttonAuto" value = "TakeDatabuttonAuto" type="button"/></td></tr>
+	<tr><td><div id="takeDatabuttonAutoConing" ></div></td></tr>
+	<tr><td><div id="takeDatabuttonAutoCon" ></div></td></tr>
 </table>
+</fieldset>
+
 
 <div id="allhtml"></div>
 </body>
@@ -33,6 +50,31 @@
 		search_pserid(null);
 	}
 
+	///手机取数据
+	$("#takeDatabuttonHand").click(function () {
+		$("#takeDatabuttonHandCon").html("生成中...");
+		var brand_text=$("#fctbox").find("option:selected").text();
+		var brand_value=$("#fctbox").find("option:selected").attr("value");
+		var ser_text=$("#brbox").find("option:selected").text();
+		var ser_value=$("#brbox").find("option:selected").attr("value");
+			if($.trim(ser_value)!="" && $.trim(ser_value)!='0'){
+				$.ajax({
+					url:"/param",
+					data:{
+						ser_value:ser_value,
+						brand_text:brand_text,
+						brand_value:brand_value,
+						ser_text:ser_text
+					},
+					success:function(data){
+						$("#takeDatabuttonHandCon").html("生成成功... /cardata/")
+					},
+					error:function(data){
+						$("#takeDatabuttonHandCon").html("生成失败");
+					}
+				});
+		}
+	});
 </script>
 
 <script>
@@ -41,10 +83,10 @@
 	//车系 改变 取config.htm页面
 	function seriChange(a){
 		$.ajax({
-			url:"/param",
-			data:{ser:a},
+			url:"/paramSelect",
+			data:{ser_value:a},
 			success:function(data){
-				htmlp =data;
+				htmlp = data;
 				var htmlspec = $(data).find("#mid")[0];
 				$("#mid__").html(htmlspec);
 				if(htmlspec.options.length>0){
@@ -126,7 +168,7 @@
 
 <script>
 	//点击开始抓取数据
-$("#takeDatabutton").click(function () {
+$("#takeDatabuttonAuto").click(function () {
 	var allhtml = "";
 	$("#fctbox option").each(function () {
 		setTimeout(aaa(allhtml,$(this)),1000)
@@ -136,6 +178,7 @@ $("#takeDatabutton").click(function () {
 	function aaa(allhtml,a){
 		var brand_text = a.text();
 		var brand_value = a.val();
+		$("#takeDatabuttonAutoConing").html(brand_text+brand_value+"生成中...");
 		if($.trim(brand_value)!="" && $.trim(brand_value)!='0'){
 			getPser(brand_value);//与车系绑定值
 			$("#brbox option").each(function(){
@@ -157,10 +200,10 @@ $("#takeDatabutton").click(function () {
 					ser_text:ser_text
 				},
 				success:function(data){
-					console.log(data);
+					$("#takeDatabuttonAutoCon").html(ser_text+ser_value+"生成成功... /cardata/");
 				},
 				error:function(data){
-					console("车系出错！");
+					$("#takeDatabuttonAutoCon").html("生成失败");
 				}
 			});
 		}
