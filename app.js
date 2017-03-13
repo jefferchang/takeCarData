@@ -34,23 +34,12 @@ app.get('/paramSelect', function (req, r) {
         });
 });
 
-var takedata = [];
-
-
 app.get('/param', function (req, r) {
     var ser_value = req.query.ser_value;
     var brand_text = req.query.brand_text;
     var brand_value = req.query.brand_value;
     var ser_text = req.query.ser_text;
     var targetUrl = "http://newcar.xcar.com.cn/" + ser_value + "/config.htm";
-    takedata.push[targetUrl];
-    var buffer = xlsx.build([
-        {
-            name: '车url',
-            data: takedata
-        }
-    ]);
-    fs.writeFileSync('url.xlsx', buffer, {'flag': 'w'});
     superagent.get(targetUrl)
         .charset('gb2312')
         .end(function (err, res) {
@@ -144,20 +133,20 @@ app.get('/autoParam', function (req, r) {
         jsstr = jsstr + "  var p = []; p.push(pb_arr);p.push(ps_arr);exports.name=p;";
         fs.writeFile(path.join("js/", 'data.js'), jsstr, function (err) {
             var data = require('./js/data.js');
-            var obj =  bsfction(data);//
+            var obj =  bsfction(data,url);//
             var brandname =  obj.brandname;
             var brandvalue = obj.brandvalue;
             var sername = obj.sername;
             var servalue = obj.servalue;
-            var i = 0;
-            bsloop(brandname,brandvalue,sername,servalue,url,i);
+            var urlcon = obj.urlcon;
+            bsloop(brandname,brandvalue,sername,servalue,urlcon);
         });
     });
     r.send("正在导入....");
 });
 
 //拿到品牌和车系
-var bsfction = function (data) {
+var bsfction = function (data,url) {
     var obj =new Object();
     var databs = data.name;
     var pb_arr = databs[0];
@@ -167,6 +156,7 @@ var bsfction = function (data) {
     var brandvalue = [];
     var sername = [];
     var servalue = [];
+    var urlcon = [];
     for (var loop = 0; loop < brandstr.length; loop += 2) {
         var bvalue = brandstr[loop];
         var bname = brandstr[loop + 1];
@@ -177,6 +167,7 @@ var bsfction = function (data) {
                 brandvalue.push(bvalue);
                 sername.push(dd[sloop + 1]);
                 servalue.push(dd[sloop]);
+                urlcon.push(url.replace("${url}",dd[sloop]));
             }
         }
     }
@@ -184,6 +175,7 @@ var bsfction = function (data) {
     obj.brandvalue=brandvalue;
     obj.sername=sername;
     obj.servalue=servalue;
+    obj.urlcon = urlcon;
     return obj;
 }
 //睡的时间
@@ -270,31 +262,30 @@ var createExcel = function (htmlall,brand_text,ser_text) {
     }
 }
 
-var bsloop = function(brandname,brandvalue,sername,servalue,url,i){
-        var brand_text= brandname[i];
-        var brand_value = brandvalue[i];
-        var ser_name =sername[i];
-        var ser_value = servalue[i];
-        var tagurl = url.replace("${url}",ser_value);
-        superagent.get(tagurl).charset('gb2312').end(function (err, res) {
-            if (res) {
-                var text = res.text;
-                var $ = cheerio.load(text, {decodeEntities: false});
-                var jq = $(text);
-                var htmlall = chtml($,jq,brand_text,brand_value,ser_name,ser_value);
-                ///
-                createExcel(htmlall,brand_text,ser_name);
-            }
-            i++;
-            if(brandname.length > i ){
-                bsloop(brandname,brandvalue,sername,servalue,url,i)
-            }else{
-                console.log("执行完成功!");
-            }
-            console.log("执行行数:"+i);
+var bsloop = function(brandname,brandvalue,sername,servalue,urlcon){
+    var bl = 1;
+    urlcon.forEach(function(value,i){
+            var brand_text= brandname[i];
+            var brand_value = brandvalue[i];
+            var ser_name = sername[i];
+            var ser_value = servalue[i];
+            var url = urlcon[i];
+            superagent.get(value).charset('gb2312').end(function (err, res) {
+                if (res) {
+                    var text = res.text;
+                    var $ = cheerio.load(text, {decodeEntities: false});
+                    var jq = $(text);
+                    var htmlall = chtml($,jq,brand_text,brand_value,ser_name,ser_value);
+                    ///
+                    createExcel(htmlall,brand_text,ser_name);
+                }
+                if(bl >= urlcon.length){
+                    console.log("执行成功!");
+                }
+                console.log("执行行数:"+bl);
+                bl++;
+            });
         });
-
-
 }
 app.use(express.static(path.join(__dirname, 'view')));
 app.listen(3000);
