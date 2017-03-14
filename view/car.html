@@ -4,30 +4,29 @@
 	<script src="./jquery.min.js"></script>
 </head>
 
-<script src="http://html.xcar.com.cn/newcar/pub_js/car_arr_newcar_2009_ps.js" charset="gb2312" type="text/javascript" ></script>
-<script src="http://newcar.xcar.com.cn/pub_js/car_search_2009_ps.js"  charset="gb2312" type="text/javascript" ></script>
+ 
 
 
 
 <body>
 <fieldset>
-	<legend>ÊÖ¶¯(°´³µÏµ)</legend>
+	<legend>æ‰‹åŠ¨(æŒ‰è½¦ç³»)</legend>
 	<table>
-		<tr><td>Æ·ÅÆ:</td><td><select id="fctbox" onchange="brandChange()"></select></td></tr>
-		<tr><td>³µÏµ:</td><td><select id="brbox" onchange="seriChange(this.value)"  ></select></td></tr>
-		<tr><td>³µĞÍ:</td><td><div id="mid__"></div></td></tr>
-		<tr><td>²ÎÊı´óÀà:</td><td><select   id="Ddlei1" onChange='getDdlei2(this.value)'>
-			<option value="" selected>-ÇëÑ¡Ôñ²ÎÊı´óÀà-</option>
+		<tr><td>å“ç‰Œ:</td><td><select id="fctbox" onchange="brandChange()"></select></td></tr>
+		<tr><td>è½¦ç³»:</td><td><select id="brbox" onchange="seriChange(this.value)"  ></select></td></tr>
+		<tr><td>è½¦å‹:</td><td><div id="mid__"></div></td></tr>
+		<tr><td>å‚æ•°å¤§ç±»:</td><td><select   id="Ddlei1" onChange='getDdlei2(this.value)'>
+			<option value="" selected>-è¯·é€‰æ‹©å‚æ•°å¤§ç±»-</option>
 		</select></td></tr>
-		<tr><td>²ÎÊıĞ¡Àà:</td><td><select   id="Ddlei2" onChange='getthisvalue(this.value)'> </select></td></tr>
-		<tr><td>Öµ:</td><td><div id="show_type"></div></td></tr>
+		<tr><td>å‚æ•°å°ç±»:</td><td><select   id="Ddlei2" onChange='getthisvalue(this.value)'> </select></td></tr>
+		<tr><td>å€¼:</td><td><div id="show_type"></div></td></tr>
 		<tr><td><input id="takeDatabuttonHand" value = "TakeDatabuttonHand" type="button"/></td></tr>
 		<tr><td><div id="takeDatabuttonHandCon" ></div></td></tr>
 	</table>
 </fieldset>
 
 <fieldset>
-	<legend>×Ô¶¯(ËùÓĞÆ·ÅÆ-³µÏµ)</legend>
+	<legend>è‡ªåŠ¨(æ‰€æœ‰å“ç‰Œ-è½¦ç³»)</legend>
 <table>
 	<tr><td> <input id="takeDatabuttonAuto" value = "TakeDatabuttonAuto" type="button"/></td></tr>
 	<tr><td><div id="takeDatabuttonAutoConing" ></div></td></tr>
@@ -36,7 +35,7 @@
 </fieldset>
 
 <fieldset>
-	<legend>¶©Ê±ÈÎÎñ(ËùÓĞÆ·ÅÆ-³µÏµ)</legend>
+	<legend>è®¢æ—¶ä»»åŠ¡(æ‰€æœ‰å“ç‰Œ-è½¦ç³»)</legend>
 	<table>
 		<tr><td> <input id="takeDatabuttonAutoFixTime" value = "takeDatabuttonAutoFixTime" type="button"/></td></tr>
 	</table>
@@ -49,17 +48,17 @@
 
 
 <script>
-	//³õÊ¼»¯Æ·ÅÆ
+	//åˆå§‹åŒ–å“ç‰Œ
 	init_pbrand(null);
 
-	//Æ·ÅÆ¸Ä±ä È¡µÃ³µÏµ
+	//å“ç‰Œæ”¹å˜ å–å¾—è½¦ç³»
 	function brandChange(){
 		search_pserid(null);
 	}
 
-	///ÊÖ»úÈ¡Êı¾İ
+	///æ‰‹æœºå–æ•°æ®
 	$("#takeDatabuttonHand").click(function () {
-		$("#takeDatabuttonHandCon").html("Éú³ÉÖĞ...");
+		$("#takeDatabuttonHandCon").html("ç”Ÿæˆä¸­...");
 		var brand_text=$("#fctbox").find("option:selected").text();
 		var brand_value=$("#fctbox").find("option:selected").attr("value");
 		var ser_text=$("#brbox").find("option:selected").text();
@@ -74,10 +73,10 @@
 						ser_text:ser_text
 					},
 					success:function(data){
-						$("#takeDatabuttonHandCon").html("Éú³É³É¹¦... /cardata/")
+						$("#takeDatabuttonHandCon").html("ç”ŸæˆæˆåŠŸ... /cardata/")
 					},
 					error:function(data){
-						$("#takeDatabuttonHandCon").html("Éú³ÉÊ§°Ü");
+						$("#takeDatabuttonHandCon").html("ç”Ÿæˆå¤±è´¥");
 					}
 				});
 		}
@@ -88,7 +87,7 @@
 		$.ajax({
 			url:"/autoParam",
 			success:function(data){
-				alert("¿ªÊ¼Ö´ĞĞÁË¡£¡£");
+				alert("å¼€å§‹æ‰§è¡Œäº†ã€‚ã€‚");
 			}
 		});
 	})
@@ -96,9 +95,9 @@
 </script>
 
 <script>
-	//¼ÇÈ¡ÍøÒ³ÄÚÈİ
+	//è®°å–ç½‘é¡µå†…å®¹
 	var htmlp="";
-	//³µÏµ ¸Ä±ä È¡config.htmÒ³Ãæ
+	//è½¦ç³» æ”¹å˜ å–config.htmé¡µé¢
 	function seriChange(a){
 		$.ajax({
 			url:"/paramSelect",
@@ -120,11 +119,11 @@
 		});
 	}
 
-	//³õÊ¼»¯²ÎÊı´óÀà
+	//åˆå§‹åŒ–å‚æ•°å¤§ç±»
 	function getmid(mid)
 	{
 
-		var Ddlei1_str = '<option value="">-ÇëÑ¡Ôñ²ÎÊı´óÀà-</option>';
+		var Ddlei1_str = '<option value="">-è¯·é€‰æ‹©å‚æ•°å¤§ç±»-</option>';
 
 		$(htmlp).find(".show_detaile2").each(function(){
 			if($(this).next().find("[mid=" + mid + "]").length > 0){
@@ -134,17 +133,17 @@
 		$("#Ddlei1").html(Ddlei1_str);
 
 	}
-	// ¶ÁÈ¡Ğ¡Àà¡£
+	// è¯»å–å°ç±»ã€‚
 	function getDdlei2(baseid){
 		if(baseid){
 			var Ddlei1_val = $(htmlp).find("select[name=mid]").val();
 			$(htmlp).find("#Ddlei2").empty();
-			var option = "<option value='' selected>-ÇëÑ¡Ôñ²ÎÊıĞ¡Àà-</option>";
+			var option = "<option value='' selected>-è¯·é€‰æ‹©å‚æ•°å°ç±»-</option>";
 
 			$(htmlp).find("#base_"+baseid+" tr").each(function(i){
 				if($(this).find("td[mid=" + Ddlei1_val + "]").length > 0){
 					var v = $(this).find('td').eq(0).attr("id").replace('1_','');
-					var n = $(this).find('td').eq(0).html().replace('£º','');
+					var n = $(this).find('td').eq(0).html().replace('ï¼š','');
 					option += "<option value='"+v+"'>"+n+"</option>";
 				}
 			});
@@ -153,7 +152,7 @@
 		}
 	}
 
-	//¿ªÊ¼È¡Öµ ¡£
+	//å¼€å§‹å–å€¼ ã€‚
 	function getthisvalue(Ddlei2){
 		if(Ddlei2){
 			var m = $(htmlp).find("#mid").val();
@@ -168,13 +167,13 @@
 
 
 
-	function getPser(pserid){ //Éú³É³µÏµ
+	function getPser(pserid){ //ç”Ÿæˆè½¦ç³»
 		var brboxobj=document.getElementById('brbox');
 		if(ps_arr[pserid]!='') {
 			var dd = ps_arr[pserid].split(',');
 			brboxobj.innerText = '';
 			brboxobj.options.length = 0;
-			brboxobj.options[0] = new Option('--------Ñ¡Ôñ³µÏµ--------', 0);
+			brboxobj.options[0] = new Option('--------é€‰æ‹©è½¦ç³»--------', 0);
 			var c = 1;
 			for (loop = 0; loop < dd.length; loop += 2) {
 				brboxobj.options[c] = new Option(dd[loop + 1], dd[loop]);
@@ -185,7 +184,7 @@
 </script>
 
 <script>
-	//µã»÷¿ªÊ¼×¥È¡Êı¾İ
+	//ç‚¹å‡»å¼€å§‹æŠ“å–æ•°æ®
 $("#takeDatabuttonAuto").click(function () {
 	var allhtml = "";
 	$("#fctbox option").each(function () {
@@ -196,9 +195,9 @@ $("#takeDatabuttonAuto").click(function () {
 	function aaa(allhtml,a){
 		var brand_text = a.text();
 		var brand_value = a.val();
-		$("#takeDatabuttonAutoConing").html(brand_text+brand_value+"Éú³ÉÖĞ...");
+		$("#takeDatabuttonAutoConing").html(brand_text+brand_value+"ç”Ÿæˆä¸­...");
 		if($.trim(brand_value)!="" && $.trim(brand_value)!='0'){
-			getPser(brand_value);//Óë³µÏµ°ó¶¨Öµ
+			getPser(brand_value);//ä¸è½¦ç³»ç»‘å®šå€¼
 			$("#brbox option").each(function(){
 				setTimeout(bbb(allhtml,$(this),brand_text,brand_value),5000);
 			});
@@ -218,10 +217,10 @@ $("#takeDatabuttonAuto").click(function () {
 					ser_text:ser_text
 				},
 				success:function(data){
-					$("#takeDatabuttonAutoCon").html(ser_text+ser_value+"Éú³É³É¹¦... /cardata/");
+					$("#takeDatabuttonAutoCon").html(ser_text+ser_value+"ç”ŸæˆæˆåŠŸ... /cardata/");
 				},
 				error:function(data){
-					$("#takeDatabuttonAutoCon").html("Éú³ÉÊ§°Ü");
+					$("#takeDatabuttonAutoCon").html("ç”Ÿæˆå¤±è´¥");
 				}
 			});
 		}
