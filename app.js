@@ -13,6 +13,7 @@ var iconv = require('iconv-lite');
 var xlsx = require('node-xlsx');
 var fs = require('fs');
 var request = require('request');
+var mysql = require('./js/mysql.js');
 var app = express();
 charset(superagent);
 
@@ -39,7 +40,7 @@ app.get('/param', function (req, r) {
     var brand_text = req.query.brand_text;
     var brand_value = req.query.brand_value;
     var ser_text = req.query.ser_text;
-    var targetUrl = "#";
+    var targetUrl = "http://newcar.xcar.com.cn/" + ser_value + "/config.htm";
     superagent.get(targetUrl)
         .charset('gb2312')
         .end(function (err, res) {
@@ -114,7 +115,7 @@ app.get('/param', function (req, r) {
                     ]);
                     var bt = brand_text.replace(" ", "-");
                     var st = ser_text.replace(" ", "-");
-                    fs.writeFileSync("cardata/" + bt + "_" + st + '.xlsx', buffer, {'flag': 'w'});
+                    fs.writeFile("cardata/" + bt + "_" + st + '.xlsx', buffer, {'flag': 'w'});
                 }
                 r.send(res.text);
             }
@@ -144,7 +145,6 @@ app.get('/autoParam', function (req, r) {
     });
     r.send("正在导入....");
 });
-
 //拿到品牌和车系
 var bsfction = function (data,url) {
     var obj =new Object();
@@ -243,7 +243,7 @@ var chtml = function($,jq,brand_text,brand_value,ser_text,ser_value){
     return  htmlall;
 }
 //生成 excel
-var createExcel = function (htmlall,brand_text,ser_text) {
+var createExcel = function (htmlall,brand_text,ser_text,b1,ul) {
     if (htmlall) {
         var cars = [];
         var cardata = htmlall.split("@@##");
@@ -256,14 +256,19 @@ var createExcel = function (htmlall,brand_text,ser_text) {
                 data: cars
             }
         ]);
-        console.log("准备生成.."+new Date());
-        fs.writeFileSync(path.join("cardata/", brand_text + "_" + ser_text + '.xlsx'), buffer, {'flag': 'w'});
-        console.log("生成Excel成功"+new Date());
+        console.log("准备生成 ."+brand_text+ser_text+new Date());
+        fs.writeFile(path.join("cardata/", brand_text + "_" + ser_text + '.xlsx'), buffer, {'flag': 'w'},function(){
+            if(b1>=ul){
+                console.log("生成Excel完成");
+            }
+            console.log("生成Excel"+brand_text+ser_text+"成功"+new Date());
+        });
     }
 }
 
 var bsloop = function(brandname,brandvalue,sername,servalue,urlcon){
-    var bl = 1;
+    var bl = 0;
+    var ul = urlcon.length;
     urlcon.forEach(function(value,i){
             var brand_text= brandname[i];
             var brand_value = brandvalue[i];
@@ -271,24 +276,23 @@ var bsloop = function(brandname,brandvalue,sername,servalue,urlcon){
             var ser_value = servalue[i];
             var url = urlcon[i];
             superagent.get(value).charset('gb2312').end(function (err, res) {
+                bl++;
                 if (res) {
                     var text = res.text;
                     var $ = cheerio.load(text, {decodeEntities: false});
                     var jq = $(text);
                     var htmlall = chtml($,jq,brand_text,brand_value,ser_name,ser_value);
                     ///
-                    createExcel(htmlall,brand_text,ser_name);
+                    createExcel(htmlall,brand_text,ser_name,bl,ul);
+
                 }
-                if(bl >= urlcon.length){
-                    console.log("执行成功!");
-                }
-                console.log("执行行数:"+bl);
-                bl++;
             });
         });
 }
+
 app.use(express.static(path.join(__dirname, 'view')));
 app.listen(3000);
 console.log("启动完成");
 
  
+
