@@ -8,14 +8,17 @@ var superagent = require('superagent');
 var charset = require('superagent-charset');
 var cheerio = require('cheerio');
 var eventproxy = require('eventproxy');
-var BufferHelper = require('bufferhelper');
 var iconv = require('iconv-lite');
 var xlsx = require('node-xlsx');
 var fs = require('fs');
 var request = require('request');
-var mysql = require('./js/mysql.js');
 var app = express();
 charset(superagent);
+
+var myconifg={
+    url:"url",
+    jsurl:"jsurl"
+};
 
 app.all('*', function (req, res, next) {
     res.header("Content-Type", "text/html;charset=gb2312");
@@ -25,7 +28,7 @@ app.all('*', function (req, res, next) {
 
 app.get('/paramSelect', function (req, r) {
     var ser_value = req.query.ser_value;
-    var targetUrl = "http://newcar.xcar.com.cn/" + ser_value + "/config.htm";
+    var targetUrl = myconifg.url+ ser_value + "/config.htm";
     superagent.get(targetUrl)
         .charset('gb2312')
         .end(function (err, res) {
@@ -40,7 +43,7 @@ app.get('/param', function (req, r) {
     var brand_text = req.query.brand_text;
     var brand_value = req.query.brand_value;
     var ser_text = req.query.ser_text;
-    var targetUrl = "http://newcar.xcar.com.cn/" + ser_value + "/config.htm";
+    var targetUrl = myconifg.url + ser_value + "/config.htm";
     superagent.get(targetUrl)
         .charset('gb2312')
         .end(function (err, res) {
@@ -125,9 +128,9 @@ app.get('/param', function (req, r) {
 //取数据
 app.get('/autoParam', function (req, r) {
     var jsstr = "";
-    var url = "http://newcar.xcar.com.cn/${url}/config.htm";
+    var url = myconifg.url+"${url}/config.htm";
     request({
-        url: "http://html.xcar.com.cn/newcar/pub_js/car_arr_newcar_2009_ps.js",
+        url: myconifg.jsurl,
         encoding: null
     }, function (error, response, body) {
         jsstr = iconv.decode(body, "gb2312").toString();
@@ -295,4 +298,3 @@ app.listen(3000);
 console.log("启动完成");
 
  
-
